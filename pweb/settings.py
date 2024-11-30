@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-t_-cl2580se4quu7kbgb3pfsgmvx_966^1xby%l8_2bwfgjf9&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  
+DEBUG = True 
 ALLOWED_HOSTS = ['localhost','127.0.0.1', '.vercel.app']
 
 
@@ -81,9 +81,10 @@ WSGI_APPLICATION = 'pweb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': r'C:\Projeto\workspace\cadweb\db.sqlite3',
+        'NAME': 'C:\Projeto\workspace\cadweb\db.sqlite3',
     }
 }
+
 
 
 
