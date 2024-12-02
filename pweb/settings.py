@@ -79,10 +79,7 @@ WSGI_APPLICATION = 'pweb.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'C:\Projeto\workspace\cadweb\db.sqlite3',
-    }
+    'default': dj_database_url.parse ("postgres://neondb_owner:7Jxlgbjd8vDa@ep-sweet-term-a4xle86e-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require")
 }
 
 
