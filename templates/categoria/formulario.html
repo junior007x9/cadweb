@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block titulo_conteudo %}Nova Categoria{% endblock %}
+
+{% block conteudo %}
+<div class="container mt-4">
+  <h1>Cadastrar Nova Categoria</h1>
+  <form method="post">
+    <input type="hidden" name="csrfmiddlewaretoken" value="PohHeyDFSlA86N4aBnhYiq0KadF9m9jKliC5Szt3BV05IqkV19gNwAo19ZcrrXl">
+    <p>
+        <label for="id_nome">Nome:</label>
+        <input type="text" name="nome" class="form-control" placeholder="Nome" maxlength="100" required id="id_nome">
+    </p>
+    <p>
+        <label for="id_ordem">Ordem:</label>
+        <input type="number" name="ordem" class="inteiro form-control" placeholder="" required id="id_ordem">
+    </p>
+    <p>
+        <button class="btn btn-primary" type="submit">Enviar</button>
+    </p>
+  </form>
+</div>
+{% endblock conteudo %}
