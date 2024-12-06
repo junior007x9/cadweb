@@ -4,33 +4,46 @@
 
 {% block conteudo %}
 <div class="container mt-4">
-  <h1>Listagem de Categoria</h1>
-  <div class="mb-3">
-    <a href="{% url 'form_categoria' %}" class="btn btn-primary">Nova Categoria</a>
-  </div>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Ordem</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for categoria in lista %}
-      <tr>
-        <td>{{ categoria.id }}</td>
-        <td>{{ categoria.nome }}</td>
-        <td>{{ categoria.ordem }}</td>
-        <td>
-          <button class="btn btn-primary">Detalhes</button>
-          <button class="btn btn-warning">Alterar</button>
-          <button class="btn btn-danger">Excluir</button>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <h1>Lista de Categorias</h1>
+    <a href="{% url 'form_categoria' %}" class="btn btn-success mb-3">Adicionar Categoria</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Ordem</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categoria in lista %}
+            <tr>
+                <td>{{ categoria.id }}</td>
+                <td>{{ categoria.nome }}</td>
+                <td>{{ categoria.ordem }}</td>
+                <td>
+                    <!-- Botão para editar categoria -->
+                    <button 
+                        class="btn btn-warning btn-sm" 
+                        onclick="location.href='{% url 'form_categoria' categoria.id %}'">
+                        Editar Categoria
+                    </button>
+                    
+                     <!-- Botão para excluir -->
+                    <form action="{% url 'excluir_categoria' categoria.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta categoria?');">
+                            Excluir
+                        </button>
+                    </form>
+
+                     <!-- Botão para detalhes -->
+                    <a href="{% url 'detalhes_categoria' categoria.id %}" class="btn btn-info btn-sm">Detalhes</a>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock conteudo %}
