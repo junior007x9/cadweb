@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from .forms import *
+from django.contrib import messages
 
 def index(request):
     return render(request, 'index.html')
@@ -20,26 +21,53 @@ def lista_produtos(request):
 
 
 def form_categoria(request, id=None):
-    if id:  # Se o ID for fornecido, tenta buscar o registro
-        categoria = get_object_or_404(Categoria, id=id)
-    else:  # Se não, cria uma nova instância
-        categoria = None
-
-    if request.method == 'POST':
-        form = CategoriaForm(request.POST, instance=categoria)
-        if form.is_valid():
-            form.save()  # Salva no banco de dados
-            return redirect('categoria')  # Redireciona para a listagem
+    if id:
+        categoria = get_object_or_404(Categoria, pk=id)
+        if request.method == 'POST':
+            form = CategoriaForm(request.POST, instance=categoria)  # formulário com os dados existentes
+            if form.is_valid():
+                categoria = form.save()  # salva a instancia do modelo no banco de dados
+                messages.success(request, 'Operação realizada com Sucesso')
+                return redirect('categoria')  # redireciona para a listagem
+        else:  # método é GET, editando registro existente
+            form = CategoriaForm(instance=categoria)  # formulário preenchido com os dados existentes
     else:
-        form = CategoriaForm(instance=categoria)  # Formulário com a instância existente ou vazio
+        if request.method == 'POST':
+            form = CategoriaForm(request.POST)  # instancia o modelo com os dados do form
+            if form.is_valid():  # faz a validação do formulário
+                categoria = form.save()  # salva a instancia do modelo no banco de dados
+                messages.success(request, 'Operação realizada com Sucesso')
+                return redirect('categoria')  # redireciona para a listagem
+        else:  # método é GET, novo registro
+            form = CategoriaForm()  # formulário vazio
+    contexto = {
+        'form': form,
+    }
+    return render(request, 'categoria/formulario.html', contexto)
 
+
+def editar_categoria(request, id):
+    categoria = get_object_or_404(Categoria, pk=id)
+    
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST, instance=categoria)  # combina os dados do formulário submetido com a instância do objeto existente, permitindo editar seus valores.
+        if form.is_valid():
+            categoria = form.save()  # save retorna o objeto salvo
+            messages.success(request, 'Operação realizada com Sucesso')
+            lista = [categoria] 
+            return render(request, 'categoria/lista.html', {'lista': lista})
+    else:
+        form = CategoriaForm(instance=categoria)  # formulário preenchido com os dados existentes
     return render(request, 'categoria/formulario.html', {'form': form})
 
+
 def excluir_categoria(request, id):
-    categoria = get_object_or_404(Categoria, id=id)
+    categoria = get_object_or_404(Categoria, pk=id)
     categoria.delete()
-    return redirect('categoria')  # Redireciona para a listagem de categorias
+    messages.success(request, 'Operação realizada com Sucesso')
+    return redirect('categoria')  # redireciona para a listagem de categorias
+
 
 def detalhes_categoria(request, id):
-    categoria = get_object_or_404(Categoria, id=id)
+    categoria = get_object_or_404(Categoria, pk=id)
     return render(request, 'categoria/detalhes.html', {'categoria': categoria})
