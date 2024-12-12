@@ -5,22 +5,28 @@
 {% block conteudo %}
 <div class="container mt-4">
     <h1>Detalhes da Categoria</h1>
-    <table class="table table-striped mt-3">
-        <tbody>
-            <tr>
-                <th scope="row">ID</th>
-                <td>{{ categoria.id }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Nome</th>
-                <td>{{ categoria.nome }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Ordem</th>
-                <td>{{ categoria.ordem }}</td>
-            </tr>
-        </tbody>
-    </table>
+    {% if categoria_encontrada %}
+        <table class="table table-striped mt-3">
+            <tbody>
+                <tr>
+                    <th scope="row">ID</th>
+                    <td>{{ categoria.id }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Nome</th>
+                    <td>{{ categoria.nome }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Ordem</th>
+                    <td>{{ categoria.ordem }}</td>
+                </tr>
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-danger mt-3" role="alert">
+            Categoria não encontrada.
+        </div>
+    {% endif %}
     <a href="{% url 'categoria' %}" class="btn btn-primary">Voltar</a>
 </div>
 {% endblock %}

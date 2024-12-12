@@ -2,6 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from .forms import *
 from django.contrib import messages
+from django.http import Http404, HttpResponseNotFound
+
+
 
 def index(request):
     return render(request, 'index.html')
@@ -67,7 +70,11 @@ def excluir_categoria(request, id):
     messages.success(request, 'Operação realizada com Sucesso')
     return redirect('categoria')  # redireciona para a listagem de categorias
 
-
 def detalhes_categoria(request, id):
-    categoria = get_object_or_404(Categoria, pk=id)
-    return render(request, 'categoria/detalhes.html', {'categoria': categoria})
+    try:
+        categoria = get_object_or_404(Categoria, pk=id)
+        categoria_encontrada = True
+    except Http404:
+        categoria = None
+        categoria_encontrada = False
+    return render(request, 'categoria/detalhes.html', {'categoria': categoria, 'categoria_encontrada': categoria_encontrada})
