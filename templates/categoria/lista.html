@@ -1,15 +1,19 @@
+<!-- cliente/lista_categorias.html -->
 {% extends "base.html" %}
 
-{% block titulo_conteudo %}Categorias{% endblock %}
+{% block titulo_conteudo %}Lista de Categorias{% endblock %}
 
 {% block conteudo %}
 <div class="container mt-4">
     <h1>Lista de Categorias</h1>
-    <a href="{% url 'form_categoria' %}" class="btn btn-primary mb-3">Adicionar Categoria</a>
+    <div class="mb-3">
+        <a href="{% url 'form_categoria' %}" class="btn btn-primary">Adicionar Categoria</a>
+        <button onclick="location.reload();" class="btn btn-primary">Recarregar</button>
+    </div>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>#</th>
                 <th>Nome</th>
                 <th>Ordem</th>
                 <th>Ações</th>
@@ -18,29 +22,18 @@
         <tbody>
             {% for categoria in lista %}
             <tr>
-                <td>{{ categoria.id }}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ categoria.nome }}</td>
                 <td>{{ categoria.ordem }}</td>
                 <td>
-                    <!-- Botão para editar categoria -->
-                    <button 
-                        class="btn btn-warning btn-sm" 
-                        onclick="location.href='{% url 'form_categoria' categoria.id %}'">
-                        Editar Categoria
-                    </button>
-                    
-                     <!-- Botão para excluir -->
-                    <form action="{% url 'excluir_categoria' categoria.id %}" method="post" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta categoria?');">
-                            Excluir
-                        </button>
-                    </form>
-
-                     <!-- Botão para detalhes -->
                     <a href="{% url 'detalhes_categoria' categoria.id %}" class="btn btn-info btn-sm">Detalhes</a>
-
+                    <a href="{% url 'form_categoria' categoria.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'excluir_categoria' categoria.id %}" class="btn btn-danger btn-sm">Excluir</a>
                 </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Nenhuma categoria encontrada.</td>
             </tr>
             {% endfor %}
         </tbody>
