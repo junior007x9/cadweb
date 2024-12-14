@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from .forms import *
-from django.shortcuts import render, get_object_or_404
-from django.http import Http404
+from django.contrib import messages
+from django.http import Http404, HttpResponseNotFound
 
 
 def index(request):
