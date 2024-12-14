@@ -1,0 +1,15 @@
+<!-- cliente/formulario.html -->
+{% extends "base.html" %}
+
+{% block titulo_conteudo %}Formulário de Cliente{% endblock %}
+
+{% block conteudo %}
+<div class="container mt-4">
+    <h1>Formulário de Cliente</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+</div>
+{% endblock conteudo %}
