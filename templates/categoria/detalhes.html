@@ -1,24 +1,26 @@
-<!-- cliente/detalhes_categoria.html -->
 {% extends "base.html" %}
 
 {% block titulo_conteudo %}Detalhes da Categoria{% endblock %}
 
 {% block conteudo %}
 <div class="container mt-4">
+    {% if categoria %}
     <h1>Detalhes da Categoria</h1>
-    {% if categoria_encontrada %}
     <ul class="list-group">
-        <li class="list-group-item"><strong>ID:</strong> {{ categoria.id }}</li>
         <li class="list-group-item"><strong>Nome:</strong> {{ categoria.nome }}</li>
         <li class="list-group-item"><strong>Ordem:</strong> {{ categoria.ordem }}</li>
     </ul>
     <a href="{% url 'form_categoria' categoria.id %}" class="btn btn-warning mt-3">Editar</a>
-    <a href="{% url 'excluir_categoria' categoria.id %}" class="btn btn-danger mt-3">Excluir</a>
+    <form action="{% url 'excluir_categoria' categoria.id %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger mt-3">Excluir</button>
+    </form>
+    <a href="{% url 'lista_categorias' %}" class="btn btn-primary mt-3">Voltar</a>
     {% else %}
-    <div class="alert alert-danger mt-3" role="alert">
-        Categoria não encontrada.
+    <div class="alert alert-danger mt-4">
+        <strong>Erro:</strong> Categoria não encontrada.
     </div>
+    <a href="{% url 'lista_categorias' %}" class="btn btn-primary mt-3">Voltar</a>
     {% endif %}
-    <a href="{% url 'categoria' %}" class="btn btn-primary mt-3">Voltar</a>
 </div>
 {% endblock conteudo %}

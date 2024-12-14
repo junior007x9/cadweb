@@ -1,4 +1,3 @@
-<!-- cliente/lista_categorias.html -->
 {% extends "base.html" %}
 
 {% block titulo_conteudo %}Lista de Categorias{% endblock %}
@@ -6,21 +5,26 @@
 {% block conteudo %}
 <div class="container mt-4">
     <h1>Lista de Categorias</h1>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
     <div class="mb-3">
         <a href="{% url 'form_categoria' %}" class="btn btn-primary">Adicionar Categoria</a>
-        <button onclick="location.reload();" class="btn btn-primary">Recarregar</button>
+        <button onclick="location.reload();" class="btn btn-secondary">Recarregar</button>
     </div>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>#</th>
                 <th>Nome</th>
                 <th>Ordem</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
-            {% for categoria in lista %}
+            {% for categoria in categorias %}
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ categoria.nome }}</td>
@@ -28,7 +32,10 @@
                 <td>
                     <a href="{% url 'detalhes_categoria' categoria.id %}" class="btn btn-info btn-sm">Detalhes</a>
                     <a href="{% url 'form_categoria' categoria.id %}" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="{% url 'excluir_categoria' categoria.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                    <form action="{% url 'excluir_categoria' categoria.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                    </form>
                 </td>
             </tr>
             {% empty %}

@@ -1,6 +1,17 @@
 from django import forms
 from .models import *
 from .models import Cliente
+from django import forms
+from .models import Produto
+
+class ProdutoForm(forms.ModelForm):
+    class Meta:
+        model = Produto
+        fields = ['nome', 'preco']
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Produto'}),
+            'preco': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Preço'}),
+        }
 
 class CategoriaForm(forms.ModelForm):
     class Meta:

@@ -9,7 +9,7 @@
         {% csrf_token %}
         {{ form.as_p }} <!-- Renderiza os campos do formulário -->
         <button type="submit" class="btn btn-primary">Salvar</button>
-        <a href="{% url 'categoria' %}" class="btn btn-secondary">Cancelar</a>
+        <a href="{% url 'lista_categorias' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 {% endblock %}
