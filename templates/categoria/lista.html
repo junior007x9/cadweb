@@ -5,11 +5,6 @@
 {% block conteudo %}
 <div class="container mt-4">
     <h1>Lista de Categorias</h1>
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
-    {% endif %}
     <div class="mb-3">
         <a href="{% url 'form_categoria' %}" class="btn btn-primary">Adicionar Categoria</a>
         <button onclick="location.reload();" class="btn btn-secondary">Recarregar</button>
@@ -17,7 +12,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>#</th>
+                <th>ID</th>
                 <th>Nome</th>
                 <th>Ordem</th>
                 <th>Ações</th>
