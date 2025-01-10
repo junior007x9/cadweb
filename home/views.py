@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Categoria, Cliente, Produto
 from .forms import CategoriaForm, ClienteForm, ProdutoForm
 from django.contrib import messages
+import base64
+
 
 def index(request):
     return render(request, 'index.html')
@@ -94,16 +96,20 @@ def form_produto(request, id=None):
         produto = None
 
     if request.method == 'POST':
-        form = ProdutoForm(request.POST, instance=produto)
+        form = ProdutoForm(request.POST, request.FILES, instance=produto)
         if form.is_valid():
-            form.save()
+            produto = form.save(commit=False)
+            img_base64 = request.POST.get('img_base64')
+            if img_base64:
+                produto.img_base64 = img_base64
+            produto.save()
             if not messages.get_messages(request):
                 messages.success(request, 'Operação realizada com sucesso!')
             return redirect('lista_produtos')
     else:
         form = ProdutoForm(instance=produto)
 
-    return render(request, 'produto/formulario.html', {'form': form})
+    return render(request, 'produto/form.html', {'form': form})
 
 def excluir_produto(request, id):
     produto = get_object_or_404(Produto, id=id)
@@ -119,3 +125,6 @@ def detalhes_produto(request, id):
         return render(request, 'produto/detalhes.html', {'produto': produto})
     except Produto.DoesNotExist:
         return redirect('lista_produtos')
+
+def editar_produto(request, id):
+    return form_produto(request, id)

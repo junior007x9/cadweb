@@ -1,49 +1,50 @@
 {% extends "base.html" %}
 
-{% block titulo_conteudo %}Listagem de Produtos{% endblock %}
+{% block titulo_conteudo %} Listagem de Produtos {% endblock titulo_conteudo %}
 
-{% block conteudo %}
-<div class="container mt-4">
-    <h1>Listagem de Produtos</h1>
-    <div class="mb-3">
-        <a href="{% url 'form_produto' %}" class="btn btn-primary">Inserir Novo</a>
-        <button onclick="location.reload();" class="btn btn-secondary">Recarregar</button>
-    </div>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Preço(R$)</th>
-                <th>Categoria</th>
-                <th>Estoque</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for produto in produtos %}
-            <tr>
-                <td>{{ produto.id }}</td>
-                <td>{{ produto.nome }}</td>
-                <td>{{ produto.preco }}</td>
-                <td>{{ produto.categoria.nome }}</td>
-                <td>{{ produto.estoque }}</td>
-                <td>
-                    <a href="{% url 'detalhes_produto' produto.id %}" class="btn btn-info btn-sm">Detalhes</a>
-                    <a href="{% url 'form_produto' produto.id %}" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="#" class="btn btn-success btn-sm">Estoque</a>
-                    <form action="{% url 'excluir_produto' produto.id %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">Remover</button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">Nenhum produto encontrado.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% block conteudo %} 
+
+<div class="barrabotoes">
+    <button onClick="location='{% url 'form_produto' %}'" type="button" class="btn btn-primary btn-sm">Inserir Novo</button>
+    <button onClick="location='{% url 'lista_produtos' %}'" type="button" class="btn btn-primary btn-sm">Recarregar</button>
 </div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Preço (R$)</th>
+            <th>Categoria</th>
+            <th>Imagem</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for produto in produtos %}
+        <tr>
+            <td>{{ produto.id }}</td>
+            <td>{{ produto.nome }}</td>
+            <td>{{ produto.preco }}</td>
+            <td>{{ produto.categoria.nome }}</td>
+            <td>
+                {% if produto.img_base64 %}
+                    <img src="data:image/jpeg;base64,{{ produto.img_base64 }}" alt="Imagem do Produto" width="100">
+                {% else %}
+                    Sem imagem
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'detalhes_produto' produto.id %}" class="btn btn-info btn-sm">Detalhes</a>
+                <a href="{% url 'form_produto' produto.id %}" class="btn btn-warning btn-sm">Editar</a>
+                <form action="{% url 'excluir_produto' produto.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja remover este registro?');">Remover</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock conteudo %}
