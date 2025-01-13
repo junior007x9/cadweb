@@ -16,7 +16,7 @@
             <th>Nome</th>
             <th>Preço (R$)</th>
             <th>Categoria</th>
-            <th>Imagem</th>
+            <th>Qtde</th>
             <th>Ações</th>
         </tr>
     </thead>
@@ -27,16 +27,11 @@
             <td>{{ produto.nome }}</td>
             <td>{{ produto.preco }}</td>
             <td>{{ produto.categoria.nome }}</td>
+            <td>{{ produto.estoque.qtde }}</td>
             <td>
-                {% if produto.img_base64 %}
-                    <img src="data:image/jpeg;base64,{{ produto.img_base64 }}" alt="Imagem do Produto" width="100">
-                {% else %}
-                    Sem imagem
-                {% endif %}
-            </td>
-            <td>
-                <a href="{% url 'detalhes_produto' produto.id %}" class="btn btn-info btn-sm">Detalhes</a>
-                <a href="{% url 'form_produto' produto.id %}" class="btn btn-warning btn-sm">Editar</a>
+                <button onclick="location='{% url 'detalhes_produto' produto.id %}'" class="btn btn-info btn-sm">Detalhes</button>
+                <a href="{% url 'ajustar_estoque' produto.id %}" class="btn btn-success btn-sm">Estoque</a>
+                <a href="{% url 'editar_produto' produto.id %}" class="btn btn-warning btn-sm">Editar</a>
                 <form action="{% url 'excluir_produto' produto.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja remover este registro?');">Remover</button>

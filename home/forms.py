@@ -3,6 +3,17 @@ from .models import *
 from .models import Cliente
 from django import forms
 from .models import Produto
+from .models import Estoque
+
+class EstoqueForm(forms.ModelForm):
+    class Meta:
+        model = Estoque
+        fields = ['produto', 'qtde']
+        widgets = {
+            'produto': forms.HiddenInput(),  # Campo oculto para armazenar o ID do produto
+            'qtde': forms.TextInput(attrs={'class': 'inteiro form-control'}),
+        }
+
 
 class ProdutoForm(forms.ModelForm):
     class Meta:
@@ -27,7 +38,6 @@ class ProdutoForm(forms.ModelForm):
         super(ProdutoForm, self).__init__(*args, **kwargs)
         self.fields['preco'].localize = True
         self.fields['preco'].widget.is_localized = True
-
 
 
 

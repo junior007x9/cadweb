@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Categoria, Cliente, Produto
-from .forms import CategoriaForm, ClienteForm, ProdutoForm
+from .models import Categoria, Cliente, Produto, Estoque
+from .forms import CategoriaForm, ClienteForm, ProdutoForm, EstoqueForm
 from django.contrib import messages
 import base64
 
@@ -89,6 +89,7 @@ def lista_produtos(request):
     produtos = Produto.objects.all().order_by('-criado_em')
     return render(request, 'produto/lista.html', {'produtos': produtos})
 
+
 def form_produto(request, id=None):
     if id:
         produto = get_object_or_404(Produto, id=id)
@@ -128,3 +129,17 @@ def detalhes_produto(request, id):
 
 def editar_produto(request, id):
     return form_produto(request, id)
+
+def ajustar_estoque(request, id):
+    produto = Produto.objects.get(pk=id)
+    estoque = produto.estoque  # Pega o objeto estoque relacionado ao produto
+    if request.method == 'POST':
+        form = EstoqueForm(request.POST, instance=estoque)
+        if form.is_valid():
+            estoque = form.save()
+            lista = []
+            lista.append(estoque.produto)
+            return render(request, 'produto/lista.html', {'produtos': lista})
+    else:
+        form = EstoqueForm(instance=estoque)
+    return render(request, 'produto/estoque.html', {'form': form})
