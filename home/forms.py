@@ -5,6 +5,28 @@ from django import forms
 from .models import Produto
 from .models import Estoque
 
+from django import forms
+from .models import Cliente
+from datetime import date
+from django.core.exceptions import ValidationError
+
+class ClienteForm(forms.ModelForm):
+    class Meta:
+        model = Cliente
+        fields = ['nome', 'cpf', 'datanasc']
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome'}),
+            'cpf': forms.TextInput(attrs={'class': 'cpf form-control', 'placeholder': 'C.P.F'}),
+            'datanasc': forms.DateInput(attrs={'class': 'data form-control', 'placeholder': 'Data de Nascimento'}, format='%d/%m/%Y'),
+        }
+
+    def clean_datanasc(self):
+        datanasc = self.cleaned_data.get('datanasc')
+        if datanasc and datanasc >= date.today():
+            raise ValidationError('A data de nascimento não pode ser maior ou igual à data atual.')
+        return datanasc
+
+
 class EstoqueForm(forms.ModelForm):
     class Meta:
         model = Estoque
@@ -50,12 +72,3 @@ class CategoriaForm(forms.ModelForm):
             'ordem': forms.NumberInput(attrs={'class': 'inteiro form-control', 'placeholder': ''}),
         }
 
-class ClienteForm(forms.ModelForm):
-    class Meta:
-        model = Cliente
-        fields = ['nome', 'cpf', 'datanasc']
-        widgets = {
-            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome'}),
-            'cpf': forms.TextInput(attrs={'class': 'cpf form-control', 'placeholder': 'C.P.F'}),
-            'datanasc': forms.DateInput(attrs={'class': 'data form-control', 'placeholder': 'Data de Nascimento'}, format='%d/%m/%Y'),
-        }

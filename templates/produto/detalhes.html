@@ -8,7 +8,12 @@
    
 <p>
    <label>ID:</label><br>
-   <span class="form-control">{{ produto.id }}</span>
+   <span class="form-control">
+      {{ produto.id }}
+      {% if produto.img_base64 %}
+         <img src="data:image/jpeg;base64,{{ produto.img_base64 }}" alt="Imagem do Produto" width="50" height="50" style="margin-left: 10px;">
+      {% endif %}
+   </span>
 </p>
 
 <p>
@@ -24,8 +29,12 @@
 <p>
    <label>Imagem:</label><br>
    <span class="form-control"> 
-      <img src="data:image/jpeg;base64,{{ produto.img_base64 }}" alt="Imagem do Produto" width="200" height="200">
-    </span>
+      {% if produto.img_base64 %}
+         <img src="{{ produto.img_base64 }}" alt="Imagem do Produto" width="200" height="200">
+      {% else %}
+         <span>Imagem não disponível</span>
+      {% endif %}
+   </span>
 </p>
 
 {% endblock %}

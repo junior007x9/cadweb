@@ -1,15 +1,21 @@
-<!-- cliente/formulario.html -->
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block titulo_conteudo %}Formulário de Cliente{% endblock %}
+{% block titulo_conteudo %} Formulário de Cliente {% endblock titulo_conteudo %}
 
 {% block conteudo %}
-<div class="container mt-4">
-    <h1>Formulário de Cliente</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Salvar</button>
-    </form>
-</div>
-{% endblock conteudo %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Salvar</button>
+</form>
+
+{% endblock %}

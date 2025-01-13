@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Categoria, Cliente, Produto, Estoque
 from .forms import CategoriaForm, ClienteForm, ProdutoForm, EstoqueForm
 from django.contrib import messages
-import base64
+
 
 
 def index(request):
@@ -61,13 +61,16 @@ def form_cliente(request, id=None):
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
             form.save()
-            if not messages.get_messages(request):
-                messages.success(request, 'Operação realizada com sucesso!')
+            messages.success(request, 'Operação realizada com sucesso!')
             return redirect('lista_clientes')
+        else:
+            messages.error(request, 'Por favor, corrija os erros abaixo.')
     else:
         form = ClienteForm(instance=cliente)
 
     return render(request, 'cliente/formulario.html', {'form': form})
+
+
 
 def excluir_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
@@ -126,6 +129,7 @@ def detalhes_produto(request, id):
         return render(request, 'produto/detalhes.html', {'produto': produto})
     except Produto.DoesNotExist:
         return redirect('lista_produtos')
+
 
 def editar_produto(request, id):
     return form_produto(request, id)
