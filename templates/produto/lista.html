@@ -23,7 +23,12 @@
     <tbody>
         {% for produto in produtos %}
         <tr>
-            <td>{{ produto.id }}</td>
+            <td>
+                <span>{{ produto.id }}</span>
+                {% if produto.img_base64 %}
+                    <img src="{{ produto.img_base64 }}" alt="Imagem do Produto" width="50" height="50" style="margin-left: 10px;">
+                {% endif %}
+            </td>
             <td>{{ produto.nome }}</td>
             <td>{{ produto.preco }}</td>
             <td>{{ produto.categoria.nome }}</td>

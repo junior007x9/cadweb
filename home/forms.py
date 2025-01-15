@@ -4,9 +4,6 @@ from .models import Cliente
 from django import forms
 from .models import Produto
 from .models import Estoque
-
-from django import forms
-from .models import Cliente
 from datetime import date
 from django.core.exceptions import ValidationError
 
@@ -38,9 +35,11 @@ class EstoqueForm(forms.ModelForm):
 
 
 class ProdutoForm(forms.ModelForm):
+    qtde = forms.IntegerField(label='Quantidade em Estoque', initial=0, min_value=0)
+
     class Meta:
         model = Produto
-        fields = ['nome', 'preco', 'categoria', 'img_base64']
+        fields = ['nome', 'preco', 'categoria', 'img_base64', 'qtde']
         widgets = {
             'categoria': forms.Select(attrs={'class': 'form-control'}),
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Produto'}),
@@ -60,6 +59,14 @@ class ProdutoForm(forms.ModelForm):
         super(ProdutoForm, self).__init__(*args, **kwargs)
         self.fields['preco'].localize = True
         self.fields['preco'].widget.is_localized = True
+
+    def save(self, commit=True):
+        produto = super().save(commit=False)
+        if commit:
+            produto.save()
+            Estoque.objects.update_or_create(produto=produto, defaults={'qtde': self.cleaned_data['qtde']})
+        return produto
+
 
 
 

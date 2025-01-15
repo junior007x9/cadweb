@@ -100,20 +100,19 @@ def form_produto(request, id=None):
         produto = None
 
     if request.method == 'POST':
-        form = ProdutoForm(request.POST, request.FILES, instance=produto)
+        form = ProdutoForm(request.POST, instance=produto)
         if form.is_valid():
-            produto = form.save(commit=False)
-            img_base64 = request.POST.get('img_base64')
-            if img_base64:
-                produto.img_base64 = img_base64
-            produto.save()
-            if not messages.get_messages(request):
-                messages.success(request, 'Operação realizada com sucesso!')
+            form.save()
+            messages.success(request, 'Produto salvo com sucesso!')
             return redirect('lista_produtos')
+        else:
+            messages.error(request, 'Por favor, corrija os erros abaixo.')
     else:
         form = ProdutoForm(instance=produto)
 
     return render(request, 'produto/form.html', {'form': form})
+
+
 
 def excluir_produto(request, id):
     produto = get_object_or_404(Produto, id=id)

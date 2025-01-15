@@ -1,40 +1,46 @@
 {% extends 'base.html' %}
 
-{% block titulo %} Contato {% endblock %}
+{% block titulo %} Detalhes do Produto {% endblock %}
 
 {% block titulo_conteudo %} Detalhes do Produto {% endblock %}
 
-{% block conteudo %}  
-   
+{% block conteudo %}
+
+{% if produto %}
 <p>
-   <label>ID:</label><br>
-   <span class="form-control">
-      {{ produto.id }}
-      {% if produto.img_base64 %}
-         <img src="data:image/jpeg;base64,{{ produto.img_base64 }}" alt="Imagem do Produto" width="50" height="50" style="margin-left: 10px;">
-      {% endif %}
-   </span>
+    <label>ID:</label><br>
+    <span class="form-control">{{ produto.id }}</span>
 </p>
 
 <p>
-   <label>Nome:</label><br>
-   <span class="form-control">{{ produto.nome }}</span>
+    <label>Nome:</label><br>
+    <span class="form-control">{{ produto.nome }}</span>
 </p>
 
 <p>
-   <label>Preço R$:</label><br>
-   <span class="form-control">{{ produto.preco }}</span>
+    <label>Preço R$:</label><br>
+    <span class="form-control">{{ produto.preco }}</span>
 </p>
 
 <p>
-   <label>Imagem:</label><br>
-   <span class="form-control"> 
-      {% if produto.img_base64 %}
-         <img src="{{ produto.img_base64 }}" alt="Imagem do Produto" width="200" height="200">
-      {% else %}
-         <span>Imagem não disponível</span>
-      {% endif %}
-   </span>
+    <label>Imagem:</label><br>
+    <span class="form-control"> 
+        {% if produto.img_base64 %}
+            <img src="{{ produto.img_base64 }}" alt="Imagem do Produto" width="200" height="200">
+        {% else %}
+            <span>Imagem não disponível</span>
+        {% endif %}
+    </span>
 </p>
+
+<p>
+    <button onclick="location='{% url 'lista_produtos' %}'" type="button" class="btn btn-primary">Voltar</button>
+</p>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    <strong>Erro:</strong> Produto não encontrado.
+</div>
+<a href="{% url 'lista_produtos' %}" class="btn btn-primary mt-3">Voltar</a>
+{% endif %}
 
 {% endblock %}

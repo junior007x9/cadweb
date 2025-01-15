@@ -6,7 +6,7 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}    
     {{ form.as_p }}
-    
+
     <fieldset class="fieldset">
         <label for="imagem">Imagem:</label>
         <input type="hidden" 
@@ -22,8 +22,17 @@
             class="img_upload form-control" 
             accept="image/*"><br>
 
-        <canvas class="canvas"  id="imageCanvas" width="200" height="200"></canvas><br>
+        <canvas class="canvas" id="imageCanvas" width="200" height="200"></canvas><br>
+    </fieldset>
 
+    <fieldset class="fieldset">
+        <label for="id_qtde">Quantidade em Estoque:</label>
+        <input type="number" 
+            id="id_qtde" 
+            name="qtde" 
+            class="form-control" 
+            value="{% if form.instance.pk %}{{ form.instance.estoque.qtde }}{% else %}0{% endif %}" 
+            min="0">
     </fieldset>
 
     <button class="btn btn-primary btn-sm" type="submit">Salvar</button>
@@ -38,7 +47,7 @@
             const initialImageBase64 = $(this).val();
             const target_canvas = $(this).data('canvas');
             if (initialImageBase64) {
-                loadImage(initialImageBase64,target_canvas);
+                loadImage(initialImageBase64, target_canvas);
             }
         });
 
@@ -55,7 +64,7 @@
                     $('#'+hidden).val(imgBase64); // Seta o valor base64 no campo hidden associado ao file input
                     var canvasTarget = $('#'+hidden).data('canvas'); // Pega o canvas associado ao campo hidden
                     // Exibe a nova imagem no canvas
-                    loadImage(imgBase64,canvasTarget);
+                    loadImage(imgBase64, canvasTarget);
                 };
 
                 reader.onerror = function(error) {
