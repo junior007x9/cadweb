@@ -41,7 +41,7 @@ class ProdutoForm(forms.ModelForm):
         model = Produto
         fields = ['nome', 'preco', 'categoria', 'img_base64', 'qtde']
         widgets = {
-            'categoria': forms.Select(attrs={'class': 'form-control'}),
+            'categoria': forms.HiddenInput(),  # Campo oculto para armazenar o ID da categoria
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Produto'}),
             'img_base64': forms.HiddenInput(),
             'preco': forms.TextInput(attrs={

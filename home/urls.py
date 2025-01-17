@@ -20,4 +20,8 @@ urlpatterns = [
     path('produto/<int:id>/', views.detalhes_produto, name='detalhes_produto'),
     path('editar_produto/<int:id>/', views.editar_produto, name='editar_produto'),
     path('ajustar_estoque/<int:id>/', views.ajustar_estoque, name='ajustar_estoque'),
+    path('teste1/', views.teste1, name='teste1'),
+    path('teste2/', views.teste2, name='teste2'),
+    path('teste3/', views.teste3, name='teste3'),
+    path('buscar_dados/<str:app_modelo>/', views.buscar_dados, name='buscar_dados'),
 ]

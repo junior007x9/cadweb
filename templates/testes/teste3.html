@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block titulo_conteudo %} Isso é um teste 3 {% endblock titulo_conteudo %}
+
+{% block conteudo %}
+<p>
+    <label for="id_categoria_nome">Categoria:</label>
+    <!-- autocomplete -->
+    <input type="text" class="form-control autocomplete" 
+        id="id_categoria_nome" 
+        data-url="{% url 'buscar_dados' 'home.Categoria' %}" 
+        data-hidden="#id_categoria" >
+    <input type="hidden" id="id_categoria">
+</p>
+{% endblock conteudo %}
+
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+        // Configurando o autocomplete
+        $("#id_categoria_nome").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: $("#id_categoria_nome").data("url"),
+                    dataType: "json",
+                    data: {
+                        term: request.term
+                    },
+                    success: function (data) {
+                        response(data);
+                    }
+                });
+            },
+            minLength: 1,
+            select: function (event, ui) {
+                $("#id_categoria_nome").val(ui.item.label);
+                $("#id_categoria").val(ui.item.id);
+                return false;
+            }
+        });
+    });
+</script>
+{% endblock javascript %}
