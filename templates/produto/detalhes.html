@@ -23,6 +23,11 @@
 </p>
 
 <p>
+    <label>Quantidade em Estoque:</label><br>
+    <span class="form-control">{{ produto.estoque.qtde|default_if_none:"0" }}</span>
+</p>
+
+<p>
     <label>Imagem:</label><br>
     <span class="form-control"> 
         {% if produto.img_base64 %}

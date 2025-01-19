@@ -1,20 +1,23 @@
-estoque
-txt
-Jefferson S. Silva compartilhou este arquivo. Quer aproveitá‑lo melhor?
-{% extends "base.html" %}
-﻿
-{% block titulo_conteudo %} Ajuste de Estoque {% endblock titulo_conteudo %}
-﻿
-{% block conteudo %} 
+{% extends 'base.html' %}
+
+{% block titulo %} Ajustar Estoque {% endblock %}
+
+{% block titulo_conteudo %} Ajustar Estoque {% endblock %}
+
+{% block conteudo %}
 <p>
     <label for="id_produto">Produto:</label>
-    <span class="form-control" >{{form.instance.produto.nome}}</span>
-    </p>
+    <span class="form-control">{{ form.instance.produto.nome }}</span>
+</p>
+<p>
+    <label for="id_estoque_atual">Estoque Atual:</label>
+    <span class="form-control">{{ form.instance.produto.estoque.qtde|default_if_none:"0" }}</span>
+</p>
 <form method="post">
-    {% csrf_token %}    
+    {% csrf_token %}
     {{ form.as_p }}
     <button class="btn btn-primary btn-sm" type="submit">Salvar</button>
 </form>
 {% endblock conteudo %}
-﻿
+
 {% block javascript %}{% endblock javascript %}
