@@ -35,4 +35,10 @@ urlpatterns = [
 
     # Buscar Dados
     path('buscar_dados/<str:app_modelo>/', views.buscar_dados, name='buscar_dados'),
+    ######
+     # Pedidos
+    path('pedidos/', views.pedido, name='pedido'),
+    path('pedido/novo/<int:id>/', views.novo_pedido, name='novo_pedido'),
+
+
 ]

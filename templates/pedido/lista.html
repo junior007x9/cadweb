@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block titulo_conteudo %} Lista de Pedidos {% endblock titulo_conteudo %}
+
+{% block conteudo %}
+<div class="container mt-4">
+    <h1>Lista de Pedidos</h1>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pedido in lista %}
+            <tr>
+                <td>{{ pedido.id }}</td>
+                <td>{{ pedido.cliente.nome }}</td>
+                <td>{{ pedido.data_pedidof }}</td>
+                <td>{{ pedido.get_status_display }}</td>
+                <td>
+                    <a href="{% url 'editar_pedido' pedido.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <form action="{% url 'excluir_pedido' pedido.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja remover este registro?');">Remover</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock conteudo %}
