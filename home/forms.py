@@ -4,7 +4,10 @@ from .models import Cliente
 from django import forms
 from .models import Produto
 from .models import Estoque
+from .models import Categoria
+from .models import Pedido
 from datetime import date
+from .models import ItemPedido
 from django.core.exceptions import ValidationError
 
 class ClienteForm(forms.ModelForm):
@@ -78,4 +81,27 @@ class CategoriaForm(forms.ModelForm):
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome'}),
             'ordem': forms.NumberInput(attrs={'class': 'inteiro form-control', 'placeholder': ''}),
         }
+
+class PedidoForm(forms.ModelForm):
+    class Meta:
+        model = Pedido
+        fields = ['cliente']
+        widgets = {
+            'cliente': forms.HiddenInput(),  # Campo oculto para armazenar o ID
+        }
+class ItemPedidoForm(forms.ModelForm):
+    class Meta:
+        model = ItemPedido
+        fields = ['pedido', 'produto', 'qtde']
+        widgets = {
+            'pedido': forms.HiddenInput(),  # Campo oculto para armazenar o ID
+            'produto': forms.HiddenInput(),  # Campo oculto para armazenar o ID
+            'qtde': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+    def clean_qtde(self):
+        qtde = self.cleaned_data.get('qtde')
+        if not isinstance(qtde, int) or qtde < 0:
+            raise ValidationError('A quantidade deve ser um número inteiro positivo.')
+        return qtde
 

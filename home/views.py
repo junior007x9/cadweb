@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Categoria, Cliente, Produto, Estoque, Pedido
-from .forms import CategoriaForm, ClienteForm, ProdutoForm, EstoqueForm
+from .models import Categoria, Cliente, Produto, Estoque, Pedido, ItemPedido
+from .forms import CategoriaForm, ClienteForm, ProdutoForm, EstoqueForm, PedidoForm, ItemPedidoForm
 from django.contrib import messages
 from django.http import JsonResponse
 from django.apps import apps
@@ -172,20 +172,52 @@ def buscar_dados(request, app_modelo):
 def pedido(request):
     lista = Pedido.objects.all().order_by('id')
     return render(request, 'pedido/lista.html', {'lista': lista})
-def novo_pedido(request,id):
+def novo_pedido(request, id):
     if request.method == 'GET':
         try:
             cliente = Cliente.objects.get(pk=id)
         except Cliente.DoesNotExist:
             # Caso o registro não seja encontrado, exibe a mensagem de erro
             messages.error(request, 'Registro não encontrado')
-            return redirect('cliente')  # Redireciona para a listagem
+            return redirect('lista_clientes')  # Redireciona para a listagem de clientes
         # cria um novo pedido com o cliente selecionado
         pedido = Pedido(cliente=cliente)
-        form = PedidoForm(instance=pedido)# cria um formulario com o novo pedido
-        return render(request, 'pedido/form.html',{'form': form,})
-    else: # se for metodo post, salva o pedido.
+        form = PedidoForm(instance=pedido)  # cria um formulário com o novo pedido
+        return render(request, 'pedido/form.html', {'form': form})
+    else:  # se for método POST, salva o pedido.
         form = PedidoForm(request.POST)
         if form.is_valid():
             pedido = form.save()
             return redirect('pedido')
+        else:
+            messages.error(request, 'Erro ao salvar o pedido. Por favor, corrija os erros abaixo.')
+            return render(request, 'pedido/form.html', {'form': form})
+def detalhes_pedido(request, id):
+    try:
+        pedido = Pedido.objects.get(pk=id)
+    except Pedido.DoesNotExist:
+        messages.error(request, 'Registro não encontrado')
+        return redirect('pedido')    
+
+    if request.method == 'GET':
+        itemPedido = ItemPedido(pedido=pedido)
+        form = ItemPedidoForm(instance=itemPedido)
+    else:
+        form = ItemPedidoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Item adicionado ao pedido com sucesso!')
+            return redirect('detalhes_pedido', id=pedido.id)
+        else:
+            messages.error(request, 'Erro ao adicionar o item. Por favor, corrija os erros abaixo.')
+
+    itens_pedido = pedido.itempedido_set.all()
+    for item in itens_pedido:
+        item.total = item.qtde * item.preco
+
+    contexto = {
+        'pedido': pedido,
+        'form': form,
+        'itens_pedido': itens_pedido,
+    }
+    return render(request, 'pedido/detalhes.html', contexto)

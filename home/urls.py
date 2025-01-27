@@ -39,6 +39,8 @@ urlpatterns = [
      # Pedidos
     path('pedidos/', views.pedido, name='pedido'),
     path('pedido/novo/<int:id>/', views.novo_pedido, name='novo_pedido'),
-
+    path('pedido/editar/<int:pedido_id>/', views.editar_produto, name='editar_pedido'),
+    path('pedido/excluir/<int:id>/', views.excluir_produto, name='excluir_pedido'),
+    path('pedido/detalhes/<int:id>/', views.detalhes_pedido, name='detalhes_pedido'),
 
 ]
