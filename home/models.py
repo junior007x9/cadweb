@@ -57,7 +57,8 @@ class ItemPedido(models.Model):
     pedido = models.ForeignKey('Pedido', on_delete=models.CASCADE)
     produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
     qtde = models.PositiveIntegerField()
-    preco = models.DecimalField(max_digits=10, decimal_places=2)
+    preco = models.DecimalField(max_digits=10, decimal_places=2)  # Certifique-se de que este campo está presente
+
 
     def __str__(self):
         return f"{self.produto.nome} (Qtd: {self.qtde}) - Preço Unitário: {self.preco}"

@@ -197,7 +197,7 @@ def detalhes_pedido(request, id):
         pedido = Pedido.objects.get(pk=id)
     except Pedido.DoesNotExist:
         messages.error(request, 'Registro não encontrado')
-        return redirect('pedido')    
+        return redirect('pedido')
 
     if request.method == 'GET':
         itemPedido = ItemPedido(pedido=pedido)
@@ -205,7 +205,10 @@ def detalhes_pedido(request, id):
     else:
         form = ItemPedidoForm(request.POST)
         if form.is_valid():
-            form.save()
+            item = form.save(commit=False)
+            produto = get_object_or_404(Produto, pk=form.cleaned_data['produto'].id)
+            item.preco = produto.preco  # Preenche o campo preco com o valor do produto
+            item.save()
             messages.success(request, 'Item adicionado ao pedido com sucesso!')
             return redirect('detalhes_pedido', id=pedido.id)
         else:
