@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.apps import apps
 
-
+# Views para Página Inicial
 def index(request):
     return render(request, 'index.html')
 
@@ -71,8 +71,6 @@ def form_cliente(request, id=None):
 
     return render(request, 'cliente/formulario.html', {'form': form})
 
-
-
 def excluir_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     if request.method == 'POST':
@@ -93,7 +91,6 @@ def lista_produtos(request):
     produtos = Produto.objects.all().order_by('-criado_em')
     return render(request, 'produto/lista.html', {'produtos': produtos})
 
-
 def form_produto(request, id=None):
     if id:
         produto = get_object_or_404(Produto, id=id)
@@ -113,8 +110,6 @@ def form_produto(request, id=None):
 
     return render(request, 'produto/form.html', {'form': form})
 
-
-
 def excluir_produto(request, id):
     produto = get_object_or_404(Produto, id=id)
     if request.method == 'POST':
@@ -130,7 +125,6 @@ def detalhes_produto(request, id):
     except Produto.DoesNotExist:
         return redirect('lista_produtos')
 
-
 def editar_produto(request, id):
     return form_produto(request, id)
 
@@ -145,13 +139,17 @@ def ajustar_estoque(request, id):
         form = EstoqueForm(instance=produto.estoque)
     return render(request, 'produto/estoque.html', {'form': form})
 
+# Views de Teste
 def teste1(request):
     return render(request, 'testes/teste1.html')
+
 def teste2(request):
     return render(request, 'testes/teste2.html')
+
 def teste3(request):
     return render(request, "testes/teste3.html")
 
+# Função para buscar dados
 def buscar_dados(request, app_modelo):
     termo = request.GET.get('q', '') # pega o termo digitado
     try:
@@ -169,9 +167,11 @@ def buscar_dados(request, app_modelo):
     dados = [{'id': obj.id, 'nome': obj.nome} for obj in resultados]
     return JsonResponse(dados, safe=False)
 
+# Views para Pedido
 def pedido(request):
     lista = Pedido.objects.all().order_by('id')
     return render(request, 'pedido/lista.html', {'lista': lista})
+
 def novo_pedido(request, id):
     if request.method == 'GET':
         try:
@@ -192,6 +192,7 @@ def novo_pedido(request, id):
         else:
             messages.error(request, 'Erro ao salvar o pedido. Por favor, corrija os erros abaixo.')
             return render(request, 'pedido/form.html', {'form': form})
+
 def detalhes_pedido(request, id):
     try:
         pedido = Pedido.objects.get(pk=id)
@@ -202,25 +203,106 @@ def detalhes_pedido(request, id):
     if request.method == 'GET':
         itemPedido = ItemPedido(pedido=pedido)
         form = ItemPedidoForm(instance=itemPedido)
-    else:
+    else:  # method POST
         form = ItemPedidoForm(request.POST)
         if form.is_valid():
-            item = form.save(commit=False)
-            produto = get_object_or_404(Produto, pk=form.cleaned_data['produto'].id)
-            item.preco = produto.preco  # Preenche o campo preco com o valor do produto
-            item.save()
-            messages.success(request, 'Item adicionado ao pedido com sucesso!')
-            return redirect('detalhes_pedido', id=pedido.id)
+            item_pedido = form.save(commit=False)
+            item_pedido.preco = item_pedido.produto.preco
+
+            # Realizar aqui o tratamento do estoque
+            estoque_atual = item_pedido.produto.estoque
+            if item_pedido.qtde > estoque_atual.qtde:
+                messages.error(request, 'Estoque insuficiente para o produto solicitado')
+            else:
+                estoque_atual.qtde -= item_pedido.qtde
+                estoque_atual.save()
+                item_pedido.save()
+                messages.success(request, 'Item adicionado ao pedido com sucesso!')
+                return redirect('detalhes_pedido', id=pedido.id)
         else:
-            messages.error(request, 'Erro ao adicionar o item. Por favor, corrija os erros abaixo.')
+            messages.error(request, 'Erro ao adicionar produto. Por favor, corrija os erros abaixo.')
 
     itens_pedido = pedido.itempedido_set.all()
-    for item in itens_pedido:
-        item.total = item.qtde * item.preco
-
     contexto = {
         'pedido': pedido,
         'form': form,
         'itens_pedido': itens_pedido,
     }
     return render(request, 'pedido/detalhes.html', contexto)
+
+def editar_pedido(request, id):
+    # Implemente a lógica de edição de pedido aqui
+    # Por exemplo, você pode querer reutilizar a lógica de novo_pedido ou detalhes_pedido com algumas modificações
+    pedido = get_object_or_404(Pedido, id=id)
+
+    if request.method == 'POST':
+        form = PedidoForm(request.POST, instance=pedido)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Pedido atualizado com sucesso!')
+            return redirect('detalhes_pedido', id=pedido.id)
+        else:
+            messages.error(request, 'Erro ao atualizar o pedido. Por favor, corrija os erros abaixo.')
+    else:
+        form = PedidoForm(instance=pedido)
+
+    return render(request, 'pedido/form.html', {'form': form})
+
+def excluir_pedido(request, id):
+    pedido = get_object_or_404(Pedido, id=id)
+    if request.method == 'POST':
+        pedido.delete()
+        messages.success(request, 'Pedido excluído com sucesso.')
+        return redirect('pedido')
+
+    contexto = {
+        'pedido': pedido,
+    }
+    return render(request, 'pedido/confirmar_exclusao.html', contexto)
+
+# Views para ItemPedido
+def editar_item_pedido(request, id):
+    item_pedido = get_object_or_404(ItemPedido, id=id)
+    
+    if request.method == 'POST':
+        form = ItemPedidoForm(request.POST, instance=item_pedido)
+        if form.is_valid():
+            item_pedido = form.save(commit=False)
+            item_pedido.preco = item_pedido.produto.preco
+
+            # Realizar aqui o tratamento do estoque
+            estoque_atual = item_pedido.produto.estoque
+            if item_pedido.qtde > estoque_atual.qtde:
+                messages.error(request, 'Estoque insuficiente para o produto solicitado')
+            else:
+                estoque_atual.qtde -= item_pedido.qtde
+                estoque_atual.save()
+                item_pedido.save()
+                messages.success(request, 'Item atualizado com sucesso!')
+                return redirect('detalhes_pedido', id=item_pedido.pedido.id)
+        else:
+            messages.error(request, 'Erro ao atualizar o item do pedido. Por favor, corrija os erros abaixo.')
+    else:
+        form = ItemPedidoForm(instance=item_pedido)
+
+    contexto = {
+        'form': form,
+        'pedido': item_pedido.pedido,
+        'item_pedido': item_pedido,
+    }
+    return render(request, 'pedido/editar_item.html', contexto)
+
+def excluir_item_pedido(request, id):
+    item_pedido = get_object_or_404(ItemPedido, id=id)
+    pedido_id = item_pedido.pedido.id
+    
+    if request.method == 'POST':
+        item_pedido.delete()
+        messages.success(request, 'Item do pedido excluído com sucesso.')
+        return redirect('detalhes_pedido', id=pedido_id)
+
+    contexto = {
+        'item_pedido': item_pedido,
+        'pedido': item_pedido.pedido,
+    }
+    return render(request, 'pedido/confirmar_exclusao_item.html', contexto)

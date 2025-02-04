@@ -35,12 +35,15 @@ urlpatterns = [
 
     # Buscar Dados
     path('buscar_dados/<str:app_modelo>/', views.buscar_dados, name='buscar_dados'),
-    ######
-     # Pedidos
+
+    # Pedidos
     path('pedidos/', views.pedido, name='pedido'),
     path('pedido/novo/<int:id>/', views.novo_pedido, name='novo_pedido'),
-    path('pedido/editar/<int:pedido_id>/', views.editar_produto, name='editar_pedido'),
-    path('pedido/excluir/<int:id>/', views.excluir_produto, name='excluir_pedido'),
+    path('pedido/editar/<int:id>/', views.editar_pedido, name='editar_pedido'),
+    path('pedido/excluir/<int:id>/', views.excluir_pedido, name='excluir_pedido'),
     path('pedido/detalhes/<int:id>/', views.detalhes_pedido, name='detalhes_pedido'),
 
+    # Itens do Pedido
+    path('item_pedido/editar/<int:id>/', views.editar_item_pedido, name='editar_item_pedido'),
+    path('item_pedido/excluir/<int:id>/', views.excluir_item_pedido, name='excluir_item_pedido'),
 ]

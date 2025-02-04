@@ -12,6 +12,8 @@
                 <th>Cliente</th>
                 <th>Data</th>
                 <th>Status</th>
+                <th>Quantidade de Itens</th>
+                <th>Total (R$)</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -22,6 +24,8 @@
                 <td>{{ pedido.cliente.nome }}</td>
                 <td>{{ pedido.data_pedidof }}</td>
                 <td>{{ pedido.get_status_display }}</td>
+                <td>{{ pedido.qtdeItens }}</td>
+                <td>{{ pedido.total|floatformat:2 }}</td>
                 <td>
                     <a href="{% url 'detalhes_pedido' pedido.id %}" class="btn btn-info btn-sm">Detalhes</a>
                     <a href="{% url 'editar_pedido' pedido.id %}" class="btn btn-warning btn-sm">Editar</a>

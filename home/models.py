@@ -3,6 +3,7 @@ from datetime import date
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
+# Modelo para Categoria
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
     ordem = models.IntegerField()
@@ -11,6 +12,7 @@ class Categoria(models.Model):
     def __str__(self):
         return self.nome
 
+# Modelo para Produto
 class Produto(models.Model):
     nome = models.CharField(max_length=100)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
@@ -26,6 +28,7 @@ class Produto(models.Model):
         estoque_item, created = Estoque.objects.get_or_create(produto=self, defaults={'qtde': 0})
         return estoque_item
 
+# Modelo para Cliente
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)
     cpf = models.CharField(max_length=15, verbose_name="C.P.F")
@@ -45,25 +48,31 @@ class Cliente(models.Model):
         if self.datanasc and self.datanasc >= date.today():
             raise ValidationError('A data de nascimento não pode ser maior ou igual à data atual.')
 
+# Modelo para Estoque
 class Estoque(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     qtde = models.IntegerField()
 
     def __str__(self):
         return f'{self.produto.nome} - Quantidade: {self.qtde}'
-from django.db import models
 
+# Modelo para ItemPedido
 class ItemPedido(models.Model):
     pedido = models.ForeignKey('Pedido', on_delete=models.CASCADE)
     produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
     qtde = models.PositiveIntegerField()
-    preco = models.DecimalField(max_digits=10, decimal_places=2)  # Certifique-se de que este campo está presente
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
 
+    @property
+    def total(self):
+        """Calcula o total do item do pedido"""
+        return self.qtde * self.preco
 
     def __str__(self):
         return f"{self.produto.nome} (Qtd: {self.qtde}) - Preço Unitário: {self.preco}"
-from django.db import models
 
+
+# Modelo para Pedido
 class Pedido(models.Model):
     NOVO = 1
     EM_ANDAMENTO = 2
@@ -77,8 +86,8 @@ class Pedido(models.Model):
         (CANCELADO, 'Cancelado'),
     ]
 
-    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    produtos = models.ManyToManyField('Produto', through='ItemPedido')
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    produtos = models.ManyToManyField(Produto, through=ItemPedido)
     data_pedido = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=NOVO)
 
@@ -88,3 +97,14 @@ class Pedido(models.Model):
     @property
     def data_pedidof(self):
         return self.data_pedido.strftime('%d/%m/%Y %H:%M')
+
+    @property
+    def total(self):
+        """Calcula o total de todos os itens no pedido, formatado como moeda local"""
+        total = sum(item.qtde * item.preco for item in self.itempedido_set.all())
+        return total
+
+    @property
+    def qtdeItens(self):
+        """Conta a quantidade de itens no pedido"""
+        return self.itempedido_set.count()
