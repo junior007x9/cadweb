@@ -41,7 +41,13 @@
         <tbody>
             {% for item in itens_pedido %}
             <tr>
-                <td>{{ item.produto.nome }}</td>
+                <td>
+                    <span>{{ item.produto.id }}</span>
+                    {% if item.produto.img_base64 %}
+                        <img src="{{ item.produto.img_base64 }}" alt="Imagem do Produto" width="50" height="50" style="margin-left: 10px;">
+                    {% endif %}
+                    <span>{{ item.produto.nome }}</span>
+                </td>
                 <td>{{ item.qtde }}</td>
                 <td>{{ item.preco }}</td>
                 <td>{{ item.total|floatformat:2 }}</td>
@@ -53,6 +59,7 @@
             {% endfor %}
         </tbody>
     </table>
+    <h4>Total do Pedido: R$ {{ pedido.total_pedido|floatformat:2 }}</h4>
 </div>
 {% endblock conteudo %}
 

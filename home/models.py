@@ -108,3 +108,9 @@ class Pedido(models.Model):
     def qtdeItens(self):
         """Conta a quantidade de itens no pedido"""
         return self.itempedido_set.count()
+
+    @property
+    def total_pedido(self):
+        """Calcula o total de todos os itens no pedido"""
+        total = sum(item.total for item in self.itempedido_set.all())
+        return total

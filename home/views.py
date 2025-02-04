@@ -300,9 +300,3 @@ def excluir_item_pedido(request, id):
         item_pedido.delete()
         messages.success(request, 'Item do pedido excluído com sucesso.')
         return redirect('detalhes_pedido', id=pedido_id)
-
-    contexto = {
-        'item_pedido': item_pedido,
-        'pedido': item_pedido.pedido,
-    }
-    return render(request, 'pedido/confirmar_exclusao_item.html', contexto)
