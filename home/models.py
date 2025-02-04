@@ -114,3 +114,45 @@ class Pedido(models.Model):
         """Calcula o total de todos os itens no pedido"""
         total = sum(item.total for item in self.itempedido_set.all())
         return total
+    @property
+    def pagamentos(self):
+        return Pagamento.objects.filter(pedido=self)    
+    
+    #Calcula o total de todos os pagamentos do pedido
+  
+    @property
+    def total_pago(self):
+        total = sum(pagamento.valor for pagamento in self.pagamentos)
+        return total
+
+    @property
+    def debito(self):
+        return self.total_pedido - self.total_pago
+
+
+#modelo para pagamento
+
+class Pagamento(models.Model):
+    DINHEIRO = 1
+    CARTAO = 2
+    PIX = 3
+    OUTRA = 4
+
+    FORMA_CHOICES = [
+        (DINHEIRO, 'Dinheiro'),
+        (CARTAO, 'Cartão'),
+        (PIX, 'Pix'),
+        (OUTRA, 'Outra'),
+    ]
+
+    pedido = models.ForeignKey('Pedido', on_delete=models.CASCADE)
+    forma = models.IntegerField(choices=FORMA_CHOICES)
+    valor = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
+    data_pgto = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def data_pgtof(self):
+        """Retorna a data no formato DD/MM/AAAA HH:MM"""
+        if self.data_pgto:
+            return self.data_pgto.strftime('%d/%m/%Y %H:%M')
+        return None

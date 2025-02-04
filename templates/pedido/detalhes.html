@@ -23,7 +23,7 @@
         </p>
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary btn-sm">Salvar Produto</button>
-        <button type="button" onclick="location=''" class="btn btn-primary btn-sm">Registrar Pagamento</button>
+        <button type="button" onclick="location.href='{% url 'form_pagamento' pedido.id %}'" class="btn btn-primary btn-sm">Registrar Pagamento</button>
     </form>
 
     <hr>
@@ -59,7 +59,38 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <hr>
+    <h5>Pagamentos</h5>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Valor (R$)</th>
+                <th>Forma</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pagamento in pedido.pagamentos %}
+            <tr>
+                <td>{{ pagamento.id }}</td>
+                <td>{{ pagamento.valor }}</td>
+                <td>{{ pagamento.get_forma_display }}</td>
+                <td>{{ pagamento.data_pgto|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'editar_pagamento' pagamento.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'excluir_pagamento' pagamento.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja remover este registro?');">Excluir</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
     <h4>Total do Pedido: R$ {{ pedido.total_pedido|floatformat:2 }}</h4>
+    <h4>Total Pago: R$ {{ pedido.total_pago|floatformat:2 }}</h4>
+    <h4>Débito: R$ {{ pedido.debito|floatformat:2 }}</h4>
 </div>
 {% endblock conteudo %}
 
