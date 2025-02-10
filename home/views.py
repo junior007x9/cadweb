@@ -7,6 +7,7 @@ from django.apps import apps
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
+from datetime import datetime
 # Views para Página Inicial
 @login_required
 def index(request):
@@ -382,4 +383,3 @@ def login_view(request):
     else:
         form = AuthenticationForm()
     return render(request, 'home/login.html', {'form': form})
-

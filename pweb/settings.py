@@ -140,6 +140,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # settings.py
 
 LOGIN_URL = '/login/'  # Corrigir de LOGUIN_URL para LOGIN_URL
-
 LOGIN_REDIRECT_URL = '/'  # Isso deve redirecionar para a página inicial após o login bem-sucedido
 LOGOUT_REDIRECT_URL = '/login/'  # Isso deve redirecionar para a página inicial após

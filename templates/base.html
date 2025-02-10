@@ -34,31 +34,22 @@
             <div class="container-fluid">
                 <button class="btn btn-primary" id="toggle-sidebar"><i class="fas fa-bars"></i></button>
                 <a class="navbar-brand ms-3" href="#">Dashboard</a>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#"><i class="fas fa-envelope"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#"><i class="fas fa-bell"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#"><i class="fas fa-user-circle"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <form method="post" action="{% url 'logout' %}" style="display: inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="nav-link btn btn-link p-0 border-0" style="color: inherit;">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </button>
-                            </form>
-                        </li>
-                        
-                    </ul>
+                
+                <div class="d-flex align-items-center ms-auto">
+                    <a class="text-white me-3">{{ today|date:"d/m/Y" }}</a>
+                    <a class="nav-link text-white me-3" href="#"><i class="fas fa-envelope"></i></a>
+                    <a class="nav-link text-white me-3" href="#"><i class="fas fa-bell"></i></a>
+                    <a class="nav-link text-white me-3" href="#"><i class="fas fa-user-circle"></i></a>
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link btn btn-link p-0 border-0 text-white">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </nav>
-
+        <!-- Navbar End -->
         <!-- Dashboard Content -->
         <div class="container-fluid mt-4">
 
