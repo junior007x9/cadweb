@@ -45,6 +45,15 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#"><i class="fas fa-user-circle"></i></a>
                         </li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link btn btn-link p-0 border-0" style="color: inherit;">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </button>
+                            </form>
+                        </li>
+                        
                     </ul>
                 </div>
             </div>

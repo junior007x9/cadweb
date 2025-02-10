@@ -42,6 +42,12 @@
             <li class="nav-item">
                 <a href="{% url 'teste3'%}" class="nav-link">teste3</a>
             </li>
+            <li class="nav-item">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light w-100"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </form>
+            </li>
         </ul>
     </li>
 </ul>

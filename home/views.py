@@ -4,16 +4,20 @@ from .forms import CategoriaForm, ClienteForm, ProdutoForm, EstoqueForm, PedidoF
 from django.contrib import messages
 from django.http import JsonResponse
 from django.apps import apps
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login as auth_login
 # Views para Página Inicial
+@login_required
 def index(request):
     return render(request, 'index.html')
 
 # Views para Categoria
+@login_required
 def lista_categorias(request):
     categorias = Categoria.objects.all().order_by('-criado_em')
     return render(request, 'categoria/lista.html', {'categorias': categorias})
-
+@login_required
 def form_categoria(request, id=None):
     if id:
         categoria = get_object_or_404(Categoria, id=id)
@@ -31,7 +35,7 @@ def form_categoria(request, id=None):
         form = CategoriaForm(instance=categoria)
 
     return render(request, 'categoria/formulario.html', {'form': form})
-
+@login_required
 def excluir_categoria(request, id):
     categoria = get_object_or_404(Categoria, id=id)
     if request.method == 'POST':
@@ -39,7 +43,7 @@ def excluir_categoria(request, id):
         if not messages.get_messages(request):
             messages.success(request, 'Operação realizada com sucesso!')
         return redirect('lista_categorias')
-
+@login_required
 def detalhes_categoria(request, id):
     try:
         categoria = Categoria.objects.get(id=id)
@@ -48,10 +52,11 @@ def detalhes_categoria(request, id):
         return redirect('lista_categorias')
 
 # Views para Cliente
+@login_required
 def lista_clientes(request):
     clientes = Cliente.objects.all().order_by('-criado_em')
     return render(request, 'cliente/lista.html', {'clientes': clientes})
-
+@login_required
 def form_cliente(request, id=None):
     if id:
         cliente = get_object_or_404(Cliente, id=id)
@@ -70,7 +75,7 @@ def form_cliente(request, id=None):
         form = ClienteForm(instance=cliente)
 
     return render(request, 'cliente/formulario.html', {'form': form})
-
+@login_required
 def excluir_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     if request.method == 'POST':
@@ -78,7 +83,7 @@ def excluir_cliente(request, id):
         if not messages.get_messages(request):
             messages.success(request, 'Operação realizada com sucesso!')
         return redirect('lista_clientes')
-
+@login_required
 def detalhes_cliente(request, id):
     try:
         cliente = Cliente.objects.get(id=id)
@@ -87,10 +92,11 @@ def detalhes_cliente(request, id):
         return redirect('lista_clientes')
 
 # Views para Produto
+@login_required
 def lista_produtos(request):
     produtos = Produto.objects.all().order_by('-criado_em')
     return render(request, 'produto/lista.html', {'produtos': produtos})
-
+@login_required
 def form_produto(request, id=None):
     if id:
         produto = get_object_or_404(Produto, id=id)
@@ -109,7 +115,7 @@ def form_produto(request, id=None):
         form = ProdutoForm(instance=produto)
 
     return render(request, 'produto/form.html', {'form': form})
-
+@login_required
 def excluir_produto(request, id):
     produto = get_object_or_404(Produto, id=id)
     if request.method == 'POST':
@@ -117,17 +123,17 @@ def excluir_produto(request, id):
         if not messages.get_messages(request):
             messages.success(request, 'Operação realizada com sucesso!')
         return redirect('lista_produtos')
-
+@login_required
 def detalhes_produto(request, id):
     try:
         produto = Produto.objects.get(id=id)
         return render(request, 'produto/detalhes.html', {'produto': produto})
     except Produto.DoesNotExist:
         return redirect('lista_produtos')
-
+@login_required
 def editar_produto(request, id):
     return form_produto(request, id)
-
+@login_required
 def ajustar_estoque(request, id):
     produto = get_object_or_404(Produto, id=id)
     if request.method == 'POST':
@@ -140,16 +146,18 @@ def ajustar_estoque(request, id):
     return render(request, 'produto/estoque.html', {'form': form})
 
 # Views de Teste
+@login_required
 def teste1(request):
     return render(request, 'testes/teste1.html')
-
+@login_required
 def teste2(request):
     return render(request, 'testes/teste2.html')
-
+@login_required
 def teste3(request):
     return render(request, "testes/teste3.html")
 
 # Função para buscar dados
+@login_required
 def buscar_dados(request, app_modelo):
     termo = request.GET.get('q', '') # pega o termo digitado
     try:
@@ -168,11 +176,11 @@ def buscar_dados(request, app_modelo):
     return JsonResponse(dados, safe=False)
 
 # Views para Pedido
-
+@login_required
 def pedido(request):
     lista = Pedido.objects.all().order_by('id')
     return render(request, 'pedido/lista.html', {'lista': lista})
-
+@login_required
 def novo_pedido(request, id):
     if request.method == 'GET':
         try:
@@ -193,7 +201,7 @@ def novo_pedido(request, id):
         else:
             messages.error(request, 'Erro ao salvar o pedido. Por favor, corrija os erros abaixo.')
             return render(request, 'pedido/form.html', {'form': form})
-
+@login_required
 def detalhes_pedido(request, id):
     try:
         pedido = Pedido.objects.get(pk=id)
@@ -230,7 +238,7 @@ def detalhes_pedido(request, id):
         'itens_pedido': itens_pedido,
     }
     return render(request, 'pedido/detalhes.html', contexto)
-
+@login_required
 def editar_pedido(request, id):
     pedido = get_object_or_404(Pedido, id=id)
 
@@ -249,7 +257,7 @@ def editar_pedido(request, id):
 
 
 # Views para ItemPedido
-
+@login_required
 def editar_item_pedido(request, id):
     try:
         item_pedido = ItemPedido.objects.get(pk=id)
@@ -292,7 +300,7 @@ def editar_item_pedido(request, id):
     }
     return render(request, 'pedido/detalhes.html', contexto)
 
-
+@login_required
 def remover_item_pedido(request, id):
     try:
         item_pedido = ItemPedido.objects.get(pk=id)
@@ -307,6 +315,7 @@ def remover_item_pedido(request, id):
         messages.error(request, 'Registro não encontrado')
         return redirect('pedido')
 #pagamento
+@login_required
 def form_pagamento(request, id):
     try:
         pedido = Pedido.objects.get(pk=id)
@@ -333,7 +342,7 @@ def form_pagamento(request, id):
         'form': form,
     }
     return render(request, 'pedido/pagamento.html', contexto)
-
+@login_required
 def editar_pagamento(request, id):
     pagamento = get_object_or_404(Pagamento, id=id)
     if request.method == 'POST':
@@ -352,10 +361,25 @@ def editar_pagamento(request, id):
         'pedido': pagamento.pedido,
     }
     return render(request, 'pedido/pagamento.html', contexto)
-
+@login_required
 def excluir_pagamento(request, id):
     pagamento = get_object_or_404(Pagamento, id=id)
     pedido_id = pagamento.pedido.id
     pagamento.delete()
     messages.success(request, 'Pagamento excluído com sucesso.')
     return redirect('detalhes_pedido', id=pedido_id)
+#loguin
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')  # Redirecione para a home se o usuário já estiver logado
+
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            return redirect('home')  # Substitua 'home' pela URL desejada
+    else:
+        form = AuthenticationForm()
+    return render(request, 'home/login.html', {'form': form})
+
