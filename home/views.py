@@ -7,19 +7,9 @@ from django.apps import apps
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
-from datetime import datetime
-from django.template.loader import render_to_string
-###
-from django.template.loader import render_to_string
-from django.shortcuts import redirect
-from django.http import HttpResponse
-from xhtml2pdf import pisa
+from django.shortcuts import render, redirect
 from .models import Pedido
 from django.contrib import messages
-import io
-
-###
-from django.http import HttpResponse
 # Views para Página Inicial
 @login_required
 def index(request):
