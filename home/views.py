@@ -383,3 +383,22 @@ def login_view(request):
     else:
         form = AuthenticationForm()
     return render(request, 'home/login.html', {'form': form})
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
+
+@login_required
+def baixar_nota_fiscal_pdf(request, id):
+    try:
+        pedido = Pedido.objects.get(pk=id)
+    except Pedido.DoesNotExist:
+        messages.error(request, 'Registro não encontrado')
+        return redirect('pedido')
+
+    itens_pedido = pedido.itempedido_set.all()
+    html_string = render_to_string('pedido/nota_fiscal.html', {'pedido': pedido, 'itens_pedido': itens_pedido})
+    html = HTML(string=html_string)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=NotaFiscal_{pedido.id}.pdf'
+    html.write_pdf(response)
+    return response

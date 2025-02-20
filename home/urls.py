@@ -1,7 +1,9 @@
 from django.urls import path
 from . import views
 from django.contrib.auth.views import LoginView, LogoutView
-
+from django.urls import path
+from .views import baixar_nota_fiscal_pdf
+from .views import baixar_nota_fiscal_pdf
 urlpatterns = [
     # Index
     path('', views.index, name="index"),
@@ -56,4 +58,9 @@ urlpatterns = [
   #Loguin
      path('login/', LoginView.as_view(template_name='login.html'), name='login'),
      path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+
+  # nota fiscal
+  
+  path('nota_fiscal/<int:id>/pdf/', baixar_nota_fiscal_pdf, name='baixar_nota_fiscal_pdf'),
+  
 ]
