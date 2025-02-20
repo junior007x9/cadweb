@@ -383,9 +383,6 @@ def login_view(request):
     else:
         form = AuthenticationForm()
     return render(request, 'home/login.html', {'form': form})
-from django.http import HttpResponse
-from django.template.loader import render_to_string
-from weasyprint import HTML
 
 @login_required
 def baixar_nota_fiscal_pdf(request, id):
