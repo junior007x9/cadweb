@@ -45,7 +45,7 @@ urlpatterns = [
     path('pedido/editar/<int:id>/', views.editar_pedido, name='editar_pedido'),
     path('pedido/excluir/<int:id>/', views.remover_item_pedido, name='remover_item_pedido'),  # Corrigido
     path('pedido/detalhes/<int:id>/', views.detalhes_pedido, name='detalhes_pedido'),
-
+    path('pedido/<int:id>/', views.detalhes_pedido, name='detalhes_pedido'),
     # Itens do Pedido
     path('item_pedido/editar/<int:id>/', views.editar_item_pedido, name='editar_item_pedido'),
     path('item_pedido/excluir/<int:id>/', views.remover_item_pedido, name='excluir_item_pedido'),

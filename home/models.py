@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 import hashlib
 from decimal import Decimal
+
 # Modelo para Categoria
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
@@ -72,7 +73,6 @@ class ItemPedido(models.Model):
     def __str__(self):
         return f"{self.produto.nome} (Qtd: {self.qtde}) - Preço Unitário: {self.preco}"
 
-
 # Modelo para Pedido
 class Pedido(models.Model):
     NOVO = 1
@@ -115,17 +115,18 @@ class Pedido(models.Model):
         """Calcula o total de todos os itens no pedido"""
         total = sum(item.total for item in self.itempedido_set.all())
         return total
+
     @property
     def pagamentos(self):
         return Pagamento.objects.filter(pedido=self)    
+    
     @property
     def chave_acesso(self):
         data_str = f'{self.id}{self.data_pedido.strftime("%Y%m%d%H%M%S")}'
         chave = hashlib.sha256(data_str.encode()).hexdigest().upper()
         return chave
 
-    #Calcula o total de todos os pagamentos do pedido
-  
+    # Calcula o total de todos os pagamentos do pedido
     @property
     def total_pago(self):
         total = sum(pagamento.valor for pagamento in self.pagamentos)
@@ -137,50 +138,23 @@ class Pedido(models.Model):
 
     @property
     def icms(self):
-        return self.total_sem_impostos * 0.18
+        return round(self.total_sem_impostos * Decimal('0.18'), 2)
 
     @property
     def ipi(self):
-        return self.total_sem_impostos * 0.05
+        return round(self.total_sem_impostos * Decimal('0.05'), 2)
 
     @property
     def pis(self):
-        return self.total_sem_impostos * 0.0165
+        return round(self.total_sem_impostos * Decimal('0.0165'), 2)
 
     @property
     def cofins(self):
-        return self.total_sem_impostos * 0.076
+        return round(self.total_sem_impostos * Decimal('0.076'), 2)
 
     @property
     def total_impostos(self):
-        return self.icms + self.ipi + self.pis + self.cofins
-
-    @property
-    def total_sem_impostos(self):
-        return sum(item.total for item in self.itempedido_set.all())
-
-    @property
-    def total_com_impostos(self):
-        return self.total_sem_impostos + self.total_impostos
-    @property
-    def icms(self):
-        return self.total_sem_impostos * Decimal('0.18')
-
-    @property
-    def ipi(self):
-        return self.total_sem_impostos * Decimal('0.05')
-
-    @property
-    def pis(self):
-        return self.total_sem_impostos * Decimal('0.0165')
-
-    @property
-    def cofins(self):
-        return self.total_sem_impostos * Decimal('0.076')
-
-    @property
-    def total_impostos(self):
-        return self.icms + self.ipi + self.pis + self.cofins
+        return round(self.icms + self.ipi + self.pis + self.cofins, 2)
 
     @property
     def total_sem_impostos(self):
@@ -190,8 +164,7 @@ class Pedido(models.Model):
     def total_com_impostos(self):
         return self.total_sem_impostos + self.total_impostos
 
-#modelo para pagamento
-
+# Modelo para Pagamento
 class Pagamento(models.Model):
     DINHEIRO = 1
     CARTAO = 2

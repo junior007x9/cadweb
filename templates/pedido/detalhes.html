@@ -24,6 +24,7 @@
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary btn-sm">Salvar Produto</button>
         <button type="button" onclick="location.href='{% url 'form_pagamento' pedido.id %}'" class="btn btn-primary btn-sm">Registrar Pagamento</button>
+        <button type="button" onclick="location.href='{% url 'baixar_nota_fiscal_pdf' pedido.id %}'" class="btn btn-primary btn-sm">Baixar Nota Fiscal em PDF</button>
     </form>
 
     <hr>
