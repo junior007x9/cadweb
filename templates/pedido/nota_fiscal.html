@@ -136,6 +136,10 @@
         </div>
         <div class="rodape">Recebemos os produtos constantes nesta nota fiscal.</div>
     </div>
+    <!-- Botões para baixar o PDF e voltar -->
+    <button id="downloadBtn" class="btn btn-primary">Baixar PDF</button>
+    <button id="voltarBtn" class="btn btn-secondary">Voltar</button>
+    
     <script>
         document.getElementById("downloadBtn").addEventListener("click", function () {
             const element = document.getElementById("notaFiscal");
@@ -150,6 +154,10 @@
                 })
                 .from(element)
                 .save();
+        });
+
+        document.getElementById("voltarBtn").addEventListener("click", function () {
+            window.history.back();
         });
     </script>
 </body>
