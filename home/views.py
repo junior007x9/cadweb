@@ -9,7 +9,16 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
 from datetime import datetime
 from django.template.loader import render_to_string
+###
+from django.template.loader import render_to_string
+from django.shortcuts import redirect
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from .models import Pedido
+from django.contrib import messages
+import io
 
+###
 from django.http import HttpResponse
 # Views para Página Inicial
 @login_required
@@ -397,8 +406,14 @@ def baixar_nota_fiscal_pdf(request, id):
 
     itens_pedido = pedido.itempedido_set.all()
     html_string = render_to_string('pedido/nota_fiscal.html', {'pedido': pedido, 'itens_pedido': itens_pedido})
-    html = HTML(string=html_string)
-    response = HttpResponse(content_type='application/pdf')
+
+    result = io.BytesIO()
+    pdf = pisa.CreatePDF(io.StringIO(html_string), dest=result)
+    
+    if pdf.err:
+        messages.error(request, 'Erro ao gerar PDF')
+        return redirect('pedido')
+    
+    response = HttpResponse(result.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename=NotaFiscal_{pedido.id}.pdf'
-    html.write_pdf(response)
     return response
