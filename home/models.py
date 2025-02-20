@@ -2,7 +2,7 @@ from django.db import models
 from datetime import date
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-
+import hashlib
 from decimal import Decimal
 
 # Modelo para Categoria

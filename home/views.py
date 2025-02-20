@@ -8,6 +8,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
 from datetime import datetime
+from django.template.loader import render_to_string
+from weasyprint import HTML
+from django.http import HttpResponse
+
 # Views para Página Inicial
 @login_required
 def index(request):
