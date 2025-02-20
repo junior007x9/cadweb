@@ -405,15 +405,8 @@ def baixar_nota_fiscal_pdf(request, id):
         return redirect('pedido')
 
     itens_pedido = pedido.itempedido_set.all()
-    html_string = render_to_string('pedido/nota_fiscal.html', {'pedido': pedido, 'itens_pedido': itens_pedido})
-
-    result = io.BytesIO()
-    pdf = pisa.CreatePDF(io.StringIO(html_string), dest=result)
-    
-    if pdf.err:
-        messages.error(request, 'Erro ao gerar PDF')
-        return redirect('pedido')
-    
-    response = HttpResponse(result.getvalue(), content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename=NotaFiscal_{pedido.id}.pdf'
-    return response
+    context = {
+        'pedido': pedido,
+        'itens_pedido': itens_pedido
+    }
+    return render(request, 'pedido/nota_fiscal.html', context)
